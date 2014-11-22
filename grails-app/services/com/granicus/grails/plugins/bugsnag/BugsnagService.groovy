@@ -60,7 +60,13 @@ class BugsnagService {
         def client = getConfiguredClient(request.requestURI)
 
         try{
-            client.setUserId(request.remoteUser)
+            def user = request.getAttribute("currentUserX")
+            if (user) {
+                client.setUser(user.id?.toString(), user.email, null)
+            } else {
+                client.setUser(request.request?.getRemoteAddr(), null, null)
+            }
+
             MetaData metaData = new MetaData()
 
             metaData.addToTab( "app", "application name", grailsApplication.metadata.getApplicationName() )
