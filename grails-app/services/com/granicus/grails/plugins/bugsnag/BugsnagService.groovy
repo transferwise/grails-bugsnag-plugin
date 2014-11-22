@@ -17,7 +17,7 @@ class BugsnagService {
 
     def addMetadata = null
 
-    def getConfiguredClient(context){
+    def getConfiguredClient(String context){
 
         log.info "getConfiguredClient()"
 
