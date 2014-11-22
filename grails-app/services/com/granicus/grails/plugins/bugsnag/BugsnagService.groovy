@@ -13,6 +13,8 @@ class BugsnagService {
     def exceptionHandler
     def grailsResourceLocator
 
+    static transactional = false
+
     def addMetadata = null
 
     def getConfiguredClient(context){
