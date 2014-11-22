@@ -52,6 +52,10 @@ class BugsnagService {
       // set the application version
       client.setAppVersion( grailsApplication.metadata.getApplicationVersion() )
 
+        if (conf.containsKey('projectPackages')) {
+            client.setProjectPackages(*conf.projectPackages)
+        }
+
       return client
     }
 
