@@ -12,11 +12,11 @@ grails.project.dependency.resolution = {
     }
 
     dependencies {
-        compile 'com.bugsnag:bugsnag:1.1.0'
+        compile 'com.bugsnag:bugsnag:1.2.5'
     }
 
     plugins {
-        build ':release:2.2.1', ':rest-client-builder:1.0.3', {
+        build ':release:2.2.1', ':rest-client-builder:2.0.1', {
             export = false
         }
     }
