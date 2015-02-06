@@ -20,7 +20,7 @@
 import com.granicus.grails.plugins.bugsnag.BugsnagExceptionResolver
 
 class BugsnagGrailsPlugin {
-    def version = "0.4.tw"
+    def version = "0.5.tw"
     def grailsVersion = "2.0 > *"
     def title = "Grails Bugsnag Plugin"
     def author = "Ben Lucchesi"

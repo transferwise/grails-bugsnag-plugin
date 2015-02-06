@@ -9,6 +9,9 @@ import org.codehaus.groovy.grails.web.context.ServletContextHolder as SCH
 
 class BugsnagService {
 
+    private static List COOKIES_TO_OBFUSCATE = ["JSESSIONID"]
+    private static List HEADERS_TO_OBFUSCATE = ["X-Authorization-token", "X-Authorization-key"]
+
     def grailsApplication
     def exceptionHandler
     def grailsResourceLocator
@@ -88,9 +91,21 @@ class BugsnagService {
             metaData.addToTab( "request", "requestURI", request.requestURI )
             metaData.addToTab( "request", "forwardURI", request.forwardURI)
 
-            def cookies = request.cookies.findAll{it.name != "JSESSIONID"}
-            metaData.addToTab( "request", "cookies", cookies.collect{ "\nName: ${it.name}\nMax Age: ${it.maxAge}\nPath: ${it.path}\nSecure: ${it.secure}\nDomain: ${it.domain}\nVersion: ${it.version}\nValue: ${it.value}" }.join("\n"))
-            metaData.addToTab( "request", "headers", request.headerNames.findAll{ it != 'cookie' }.collect{ headerName -> "${headerName}: ${request.getHeaders(headerName).toList()}" }.join('\n') )
+            metaData.addToTab( "request", "cookies", request.cookies.collect {
+                String value = (COOKIES_TO_OBFUSCATE.contains(it.name)) ? it.value : obfuscate(it.value)
+
+                return "\nName: ${it.name}\nMax Age: ${it.maxAge}\nPath: ${it.path}\nSecure: ${it.secure}\nDomain: ${it.domain}\nVersion: ${it.version}\nValue: ${value}"
+            }.join("\n"))
+
+            metaData.addToTab( "request", "headers", request.headerNames.findAll{ it != 'cookie' }.collect{ headerName ->
+                String headers
+                if (HEADERS_TO_OBFUSCATE.contains(headerName)) {
+                    headers = request.getHeaders(headerName).toList().collect{obfuscate(it)}.toString()
+                } else {
+                    headers = request.getHeaders(headerName).toList().toString()
+                }
+                return "${headerName}: ${headers}"
+            }.join('\n') )
             metaData.addToTab( "request", "authType", request.authType )
             metaData.addToTab( "request", "method", request.method )
             metaData.addToTab( "request", "server", request.serverName?:"(none)" )
@@ -124,4 +139,10 @@ class BugsnagService {
             log.error "error calling notify", excp
         }
     }
+
+    private String obfuscate(String str) {
+        if (!str) return ""
+        return str.take(6)
+    }
 }
+
