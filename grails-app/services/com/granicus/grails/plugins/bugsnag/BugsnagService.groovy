@@ -87,7 +87,9 @@ class BugsnagService {
 
             metaData.addToTab( "request", "requestURI", request.requestURI )
             metaData.addToTab( "request", "forwardURI", request.forwardURI)
-            metaData.addToTab( "request", "cookies", request.cookies.collect{ "\nName: ${it.name}\nMax Age: ${it.maxAge}\nPath: ${it.path}\nSecure: ${it.secure}\nDomain: ${it.domain}\nVersion: ${it.version}\nValue: ${it.value}" }.join("\n") )
+
+            def cookies = request.cookies.findAll{it.name != "JSESSIONID"}
+            metaData.addToTab( "request", "cookies", cookies.collect{ "\nName: ${it.name}\nMax Age: ${it.maxAge}\nPath: ${it.path}\nSecure: ${it.secure}\nDomain: ${it.domain}\nVersion: ${it.version}\nValue: ${it.value}" }.join("\n"))
             metaData.addToTab( "request", "headers", request.headerNames.findAll{ it != 'cookie' }.collect{ headerName -> "${headerName}: ${request.getHeaders(headerName).toList()}" }.join('\n') )
             metaData.addToTab( "request", "authType", request.authType )
             metaData.addToTab( "request", "method", request.method )
