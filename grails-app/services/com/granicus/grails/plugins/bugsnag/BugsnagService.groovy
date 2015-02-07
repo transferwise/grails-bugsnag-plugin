@@ -92,7 +92,7 @@ class BugsnagService {
             metaData.addToTab( "request", "forwardURI", request.forwardURI)
 
             metaData.addToTab( "request", "cookies", request.cookies.collect {
-                String value = (COOKIES_TO_OBFUSCATE.contains(it.name)) ? it.value : obfuscate(it.value)
+                String value = (COOKIES_TO_OBFUSCATE.contains(it.name)) ? obfuscate(it.value) : it.value
 
                 return "\nName: ${it.name}\nMax Age: ${it.maxAge}\nPath: ${it.path}\nSecure: ${it.secure}\nDomain: ${it.domain}\nVersion: ${it.version}\nValue: ${value}"
             }.join("\n"))
